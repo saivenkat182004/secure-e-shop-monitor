@@ -14,6 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
+      competitor_prices: {
+        Row: {
+          competitor_name: string
+          competitor_price: number
+          created_at: string
+          id: string
+          product_id: string
+        }
+        Insert: {
+          competitor_name: string
+          competitor_price: number
+          created_at?: string
+          id?: string
+          product_id: string
+        }
+        Update: {
+          competitor_name?: string
+          competitor_price?: number
+          created_at?: string
+          id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_prices_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          rating: number
+          review_text: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          rating: number
+          review_text?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          rating?: number
+          review_text?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          created_at: string
+          id: string
+          price_adjustment: number
+          product_id: string
+          stock: number
+          variant_type: string
+          variant_value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          price_adjustment?: number
+          product_id: string
+          stock?: number
+          variant_type: string
+          variant_value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          price_adjustment?: number
+          product_id?: string
+          stock?: number
+          variant_type?: string
+          variant_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingCart, Plus } from 'lucide-react';
+import { ShoppingCart, Plus, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
@@ -25,7 +25,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     addToCart({
       id,
       name,
@@ -36,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="group relative bg-card rounded-xl overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+    <div className="group relative bg-card rounded-xl overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 cursor-pointer">
       {/* Image */}
       <div className="aspect-square overflow-hidden bg-secondary/50">
         <img
@@ -69,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               {stock > 0 ? `${stock} in stock` : 'Out of stock'}
             </p>
           </div>
-          
+
           <Button
             onClick={handleAddToCart}
             disabled={stock === 0}
