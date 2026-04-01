@@ -100,8 +100,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error as Error | null };
+    // First, attempt sign in to get user info
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
+    if (error) {
+      return { error: error as Error | null };
+    }
+
+    // Check for active sessions from other devices/windows
+    if (data.user) {
+      const { data: activeSessions } = await supabase
+        .from('user_sessions')
+        .select('id')
+        .eq('user_id', data.user.id)
+        .eq('is_active', true);
+
+      if (activeSessions && activeSessions.length > 0) {
+        // Sign out immediately - user is already logged in elsewhere
+        await supabase.auth.signOut();
+        return {
+          error: new Error('This account is already logged in on another device/window. Please log out from the other session first.') as Error,
+        };
+      }
+    }
+
+    return { error: null };
   };
 
   const signOut = async () => {
