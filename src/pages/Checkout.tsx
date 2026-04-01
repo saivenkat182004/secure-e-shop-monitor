@@ -59,8 +59,8 @@ const Checkout = () => {
         <Navbar />
         <div className="pt-24 pb-12 container mx-auto px-4">
           <div className="max-w-md mx-auto text-center py-20">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
-              <CheckCircle className="w-12 h-12 text-green-500" />
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+              <CheckCircle className="w-12 h-12 text-primary" />
             </div>
             <h2 className="font-display text-2xl font-bold mb-4">Order Placed Successfully!</h2>
             <p className="text-muted-foreground mb-2">Your order has been confirmed.</p>
