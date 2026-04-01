@@ -122,9 +122,11 @@ const Cart = () => {
                   </span>
                 </div>
               </div>
-              <Button className="w-full glow-primary" size="lg">
-                Proceed to Checkout
-              </Button>
+              <Link to="/checkout">
+                <Button className="w-full glow-primary" size="lg">
+                  Proceed to Checkout
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
