@@ -1,22 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Zap, Timer } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 
 const Navbar = () => {
-  const { user, signOut, sessionTimeLeft } = useAuth();
+  const { user, signOut } = useAuth();
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const isWarning = sessionTimeLeft <= 15;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
@@ -46,19 +38,7 @@ const Navbar = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
-            {/* Session Timer */}
-            {user && (
-              <div className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-semibold ${
-                isWarning 
-                  ? 'bg-destructive/20 text-destructive animate-pulse' 
-                  : 'bg-primary/10 text-primary'
-              }`}>
-                <Timer className="w-3.5 h-3.5" />
-                {formatTime(sessionTimeLeft)}
-              </div>
-            )}
-
+          <div className="flex items-center gap-4">
             <Link to="/cart" className="relative">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="w-5 h-5" />
@@ -102,22 +82,26 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border/50 animate-slide-up">
             <div className="flex flex-col gap-4">
-              {user && (
-                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-semibold w-fit ${
-                  isWarning ? 'bg-destructive/20 text-destructive animate-pulse' : 'bg-primary/10 text-primary'
-                }`}>
-                  <Timer className="w-3.5 h-3.5" />
-                  Session: {formatTime(sessionTimeLeft)}
-                </div>
-              )}
-              <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                to="/"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Home
               </Link>
-              <Link to="/products" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                to="/products"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Products
               </Link>
               {user && (
-                <Link to="/admin" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/admin"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   Admin
                 </Link>
               )}

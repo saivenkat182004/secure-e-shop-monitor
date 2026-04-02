@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Activity, Clock, Download, Shield, LogIn, Plus, Trash2, Package, X, ShoppingBag } from 'lucide-react';
+import { Users, Activity, Clock, Download, Shield, LogIn, Plus, Trash2, Package, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -48,17 +48,6 @@ interface Product {
   stock: number;
 }
 
-interface Order {
-  id: string;
-  user_id: string;
-  total_amount: number;
-  payment_method: string;
-  status: string;
-  shipping_address: unknown;
-  items: unknown;
-  created_at: string;
-}
-
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -66,10 +55,10 @@ const Admin = () => {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [activities, setActivities] = useState<UserActivity[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // Add product form
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '', description: '', price: '', category: '', image_url: '', stock: '0',
@@ -104,19 +93,17 @@ const Admin = () => {
   const fetchData = async (adminAccess: boolean) => {
     if (!user) return;
     try {
-      const [profileRes, sessionRes, activityRes, productRes, orderRes] = await Promise.all([
+      const [profileRes, sessionRes, activityRes, productRes] = await Promise.all([
         supabase.from('profiles').select('*').order('created_at', { ascending: false }),
         supabase.from('user_sessions').select('*').order('login_time', { ascending: false }),
         supabase.from('user_activity').select('*').order('created_at', { ascending: false }),
         supabase.from('products').select('*').order('created_at', { ascending: false }),
-        supabase.from('orders').select('*').order('created_at', { ascending: false }),
       ]);
 
       setProfiles(profileRes.data || []);
       setSessions(sessionRes.data || []);
       setActivities(activityRes.data || []);
       setProducts(productRes.data || []);
-      setOrders(orderRes.data || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -185,26 +172,6 @@ const Admin = () => {
     toast.success(`${filename} exported successfully!`);
   };
 
-  const exportOrdersToExcel = () => {
-    const orderData = orders.map(order => {
-      const addr = order.shipping_address as Record<string, string> || {};
-      const orderItems = (order.items as Array<Record<string, unknown>>) || [];
-      return {
-        order_id: order.id,
-        user_id: order.user_id,
-        status: order.status,
-        total_amount: `₹${order.total_amount.toLocaleString('en-IN')}`,
-        payment_method: order.payment_method,
-        customer_name: addr.full_name || '',
-        phone: addr.phone || '',
-        address: `${addr.address_line1 || ''}, ${addr.city || ''}, ${addr.state || ''} - ${addr.pincode || ''}`,
-        items: orderItems.map((i: any) => `${i.name} x${i.quantity}`).join('; '),
-        ordered_at: new Date(order.created_at).toLocaleString(),
-      };
-    });
-    exportToExcel(orderData, 'orders');
-  };
-
   const exportAllUserData = () => {
     const combinedData = profiles.map(profile => {
       const userSessions = sessions.filter(s => s.user_id === profile.user_id);
@@ -218,10 +185,15 @@ const Admin = () => {
         total_activities: userActivities.length,
         recent_activity: userActivities[0]?.action_type || 'N/A',
         sessions_json: JSON.stringify(userSessions.map(s => ({
-          login: s.login_time, logout: s.logout_time, active: s.is_active,
+          login: s.login_time,
+          logout: s.logout_time,
+          active: s.is_active,
         }))),
         activities_json: JSON.stringify(userActivities.map(a => ({
-          action: a.action_type, page: a.page_visited, details: a.action_details, time: a.created_at,
+          action: a.action_type,
+          page: a.page_visited,
+          details: a.action_details,
+          time: a.created_at,
         }))),
       };
     });
@@ -244,12 +216,15 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+
       <div className="pt-24 pb-12">
         <div className="container mx-auto px-4">
+          {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="font-display text-3xl font-bold gradient-text flex items-center gap-3">
-                <Shield className="w-8 h-8" /> Admin Dashboard
+                <Shield className="w-8 h-8" />
+                Admin Dashboard
               </h1>
               <p className="text-muted-foreground mt-2">
                 {isAdmin ? 'Full admin access' : 'Viewing your own data'}
@@ -261,7 +236,7 @@ const Admin = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="bg-card border-border/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
@@ -290,19 +265,11 @@ const Admin = () => {
               </CardHeader>
               <CardContent><div className="text-3xl font-bold">{products.length}</div></CardContent>
             </Card>
-            <Card className="bg-card border-border/50">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Orders</CardTitle>
-                <ShoppingBag className="w-5 h-5 text-primary" />
-              </CardHeader>
-              <CardContent><div className="text-3xl font-bold">{orders.length}</div></CardContent>
-            </Card>
           </div>
 
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 bg-card">
+            <TabsList className="grid w-full grid-cols-4 bg-card">
               <TabsTrigger value="products">Products</TabsTrigger>
-              <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="sessions">Sessions</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -321,6 +288,7 @@ const Admin = () => {
                   </Button>
                 </CardHeader>
                 <CardContent>
+                  {/* Add Product Form */}
                   {showAddProduct && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-secondary/50 rounded-lg">
                       <div>
@@ -355,6 +323,7 @@ const Admin = () => {
                     </div>
                   )}
 
+                  {/* Products List */}
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
@@ -371,10 +340,8 @@ const Admin = () => {
                           <tr key={p.id} className="border-b border-border/50">
                             <td className="py-3 px-4 font-medium">{p.name}</td>
                             <td className="py-3 px-4 text-muted-foreground">{p.category}</td>
-                            <td className="py-3 px-4 text-primary font-bold">₹{p.price.toLocaleString('en-IN')}</td>
-                            <td className={`py-3 px-4 font-semibold ${p.stock <= 5 ? 'text-destructive' : p.stock <= 20 ? 'text-yellow-500' : ''}`}>
-                              {p.stock}
-                            </td>
+                            <td className="py-3 px-4 text-primary font-bold">₹{p.price.toFixed(2)}</td>
+                            <td className="py-3 px-4">{p.stock}</td>
                             <td className="py-3 px-4">
                               <Button variant="ghost" size="icon" onClick={() => handleDeleteProduct(p.id)} className="text-destructive hover:text-destructive">
                                 <Trash2 className="w-4 h-4" />
@@ -385,68 +352,6 @@ const Admin = () => {
                       </tbody>
                     </table>
                     {products.length === 0 && <p className="text-center py-8 text-muted-foreground">No products yet</p>}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Orders Tab */}
-            <TabsContent value="orders">
-              <Card className="bg-card border-border/50">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="font-display flex items-center gap-2">
-                    <ShoppingBag className="w-5 h-5" /> Orders
-                  </CardTitle>
-                  <Button variant="outline" size="sm" onClick={exportOrdersToExcel}>
-                    <Download className="w-4 h-4 mr-2" /> Export Orders
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-border">
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Order ID</th>
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Customer</th>
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Items</th>
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Total</th>
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Status</th>
-                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orders.map(order => {
-                          const addr = order.shipping_address as Record<string, string> || {};
-                          const orderItems = (order.items as Array<Record<string, unknown>>) || [];
-                          return (
-                            <tr key={order.id} className="border-b border-border/50">
-                              <td className="py-3 px-4 font-mono text-xs">{order.id.substring(0, 8)}...</td>
-                              <td className="py-3 px-4">
-                                <div className="text-sm font-medium">{addr.full_name || 'N/A'}</div>
-                                <div className="text-xs text-muted-foreground">{addr.phone || ''}</div>
-                              </td>
-                              <td className="py-3 px-4 text-sm max-w-xs">
-                                {orderItems.map((i: any, idx: number) => (
-                                  <div key={idx} className="text-xs">{i.name} ×{i.quantity}</div>
-                                ))}
-                              </td>
-                              <td className="py-3 px-4 text-primary font-bold">₹{order.total_amount.toLocaleString('en-IN')}</td>
-                              <td className="py-3 px-4">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  order.status === 'pending' ? 'bg-yellow-400/20 text-yellow-400' :
-                                  order.status === 'delivered' ? 'bg-green-400/20 text-green-400' :
-                                  'bg-muted text-muted-foreground'
-                                }`}>
-                                  {order.status}
-                                </span>
-                              </td>
-                              <td className="py-3 px-4 text-sm text-muted-foreground">{new Date(order.created_at).toLocaleString()}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                    {orders.length === 0 && <p className="text-center py-8 text-muted-foreground">No orders yet</p>}
                   </div>
                 </CardContent>
               </Card>
