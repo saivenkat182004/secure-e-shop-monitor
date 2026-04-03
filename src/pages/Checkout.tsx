@@ -108,7 +108,7 @@ const Checkout = () => {
   const updateStock = async () => {
     const stockUpdates: Record<string, number> = {};
     for (const item of items) {
-      const baseId = item.id.split('-')[0];
+      const baseId = getBaseProductId(item.id);
       stockUpdates[baseId] = (stockUpdates[baseId] || 0) + item.quantity;
     }
 
