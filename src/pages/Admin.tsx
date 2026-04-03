@@ -94,17 +94,19 @@ const Admin = () => {
   const fetchData = async (adminAccess: boolean) => {
     if (!user) return;
     try {
-      const [profileRes, sessionRes, activityRes, productRes] = await Promise.all([
+      const [profileRes, sessionRes, activityRes, productRes, orderRes] = await Promise.all([
         supabase.from('profiles').select('*').order('created_at', { ascending: false }),
         supabase.from('user_sessions').select('*').order('login_time', { ascending: false }),
         supabase.from('user_activity').select('*').order('created_at', { ascending: false }),
         supabase.from('products').select('*').order('created_at', { ascending: false }),
+        supabase.from('orders').select('*').order('created_at', { ascending: false }),
       ]);
 
       setProfiles(profileRes.data || []);
       setSessions(sessionRes.data || []);
       setActivities(activityRes.data || []);
       setProducts(productRes.data || []);
+      setOrders(orderRes.data || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
