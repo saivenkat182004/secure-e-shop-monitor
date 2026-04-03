@@ -294,8 +294,9 @@ const Admin = () => {
           </div>
 
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 bg-card">
+            <TabsList className="grid w-full grid-cols-5 bg-card">
               <TabsTrigger value="products">Products</TabsTrigger>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="sessions">Sessions</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
