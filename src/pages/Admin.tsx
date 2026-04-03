@@ -384,6 +384,58 @@ const Admin = () => {
               </Card>
             </TabsContent>
 
+            {/* Orders Tab */}
+            <TabsContent value="orders">
+              <Card className="bg-card border-border/50">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="font-display flex items-center gap-2">
+                    <Package className="w-5 h-5" /> Order History
+                  </CardTitle>
+                  <Button variant="outline" size="sm" onClick={exportOrdersToExcel}>
+                    <Download className="w-4 h-4 mr-2" /> Export to Excel
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border">
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Order ID</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Product Name</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Quantity</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Ordered Date</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Delivery Date</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orders.map(order => {
+                          const items = order.items as any[];
+                          const orderedDate = new Date(order.created_at).toLocaleDateString('en-IN');
+                          const deliveryDate = new Date(new Date(order.created_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN');
+                          return items.map((item: any, idx: number) => (
+                            <tr key={`${order.id}-${idx}`} className="border-b border-border/50">
+                              <td className="py-3 px-4 font-mono text-xs">{order.id.substring(0, 8).toUpperCase()}</td>
+                              <td className="py-3 px-4 font-medium">{item.name}</td>
+                              <td className="py-3 px-4">{item.quantity}</td>
+                              <td className="py-3 px-4">{orderedDate}</td>
+                              <td className="py-3 px-4">{deliveryDate}</td>
+                              <td className="py-3 px-4">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.status === 'pending' ? 'bg-yellow-400/20 text-yellow-400' : 'bg-green-400/20 text-green-400'}`}>
+                                  {order.status}
+                                </span>
+                              </td>
+                            </tr>
+                          ));
+                        })}
+                      </tbody>
+                    </table>
+                    {orders.length === 0 && <p className="text-center py-8 text-muted-foreground">No orders yet</p>}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Users Tab */}
             <TabsContent value="users">
               <Card className="bg-card border-border/50">
