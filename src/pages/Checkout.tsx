@@ -105,7 +105,6 @@ const Checkout = () => {
   };
 
   const updateStock = async () => {
-    // Group quantities by base product ID
     const stockUpdates: Record<string, number> = {};
     for (const item of items) {
       const baseId = item.id.split('-')[0];
@@ -113,18 +112,7 @@ const Checkout = () => {
     }
 
     for (const [productId, qty] of Object.entries(stockUpdates)) {
-      const { data: product } = await supabase
-        .from('products')
-        .select('stock')
-        .eq('id', productId)
-        .single();
-
-      if (product) {
-        await supabase
-          .from('products')
-          .update({ stock: Math.max(0, product.stock - qty) })
-          .eq('id', productId);
-      }
+      await supabase.rpc('deduct_stock', { p_product_id: productId, p_quantity: qty });
     }
   };
 
