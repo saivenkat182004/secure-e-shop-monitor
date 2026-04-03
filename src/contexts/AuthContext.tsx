@@ -106,6 +106,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    if (user) {
+      await trackSession(user.id, 'logout');
+    }
     await supabase.auth.signOut();
   };
 

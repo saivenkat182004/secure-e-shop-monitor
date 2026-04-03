@@ -4,6 +4,7 @@ import { ShoppingCart, User, Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
+import SessionTimer from '@/components/SessionTimer';
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -51,7 +52,8 @@ const Navbar = () => {
             </Link>
 
             {user ? (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-3">
+                <SessionTimer />
                 <span className="text-sm text-muted-foreground">{user.email}</span>
                 <Button variant="outline" size="sm" onClick={signOut}>
                   Logout
