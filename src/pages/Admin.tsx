@@ -175,6 +175,29 @@ const Admin = () => {
     toast.success(`${filename} exported successfully!`);
   };
 
+  const exportOrdersToExcel = () => {
+    if (orders.length === 0) {
+      toast.error('No orders to export');
+      return;
+    }
+    const orderRows: object[] = [];
+    for (const order of orders) {
+      const items = order.items as any[];
+      const orderedDate = new Date(order.created_at).toLocaleDateString('en-IN');
+      const deliveryDate = new Date(new Date(order.created_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN');
+      for (const item of items) {
+        orderRows.push({
+          'Order ID': order.id.substring(0, 8).toUpperCase(),
+          'Product Name': item.name,
+          'Quantity': item.quantity,
+          'Ordered Date': orderedDate,
+          'Delivery Date': deliveryDate,
+        });
+      }
+    }
+    exportToExcel(orderRows, 'orders_report');
+  };
+
   const exportAllUserData = () => {
     const combinedData = profiles.map(profile => {
       const userSessions = sessions.filter(s => s.user_id === profile.user_id);
