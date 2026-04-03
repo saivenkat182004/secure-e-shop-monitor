@@ -74,10 +74,11 @@ const Checkout = () => {
     );
   }
 
+  const getBaseProductId = (cartId: string) => cartId.substring(0, 36);
+
   const checkStockAvailability = async (): Promise<boolean> => {
     const errors: string[] = [];
-    // Extract base product IDs (remove variant suffixes)
-    const productIds = [...new Set(items.map(item => item.id.split('-')[0]))];
+    const productIds = [...new Set(items.map(item => getBaseProductId(item.id)))];
 
     const { data: products } = await supabase
       .from('products')
@@ -91,7 +92,7 @@ const Checkout = () => {
     }
 
     for (const item of items) {
-      const baseId = item.id.split('-')[0];
+      const baseId = getBaseProductId(item.id);
       const product = products.find(p => p.id === baseId);
       if (!product) {
         errors.push(`${item.name} is no longer available.`);
