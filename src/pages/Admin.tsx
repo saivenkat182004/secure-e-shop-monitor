@@ -59,6 +59,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Add product form
+  const [orders, setOrders] = useState<any[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '', description: '', price: '', category: '', image_url: '', stock: '0',
