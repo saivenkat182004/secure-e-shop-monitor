@@ -422,12 +422,10 @@ const Admin = () => {
             {/* Users Tab */}
             <TabsContent value="users">
               <Card className="bg-card border-border/50">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle className="font-display flex items-center gap-2">
                     <Users className="w-5 h-5" /> User Credentials (Encrypted)
                   </CardTitle>
-                    <Download className="w-4 h-4 mr-2" /> Export
-                  </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
