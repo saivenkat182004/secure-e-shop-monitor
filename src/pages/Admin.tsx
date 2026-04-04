@@ -233,7 +233,7 @@ const Admin = () => {
               </p>
             </div>
             <Button onClick={exportAllData} className="glow-primary">
-              <Download className="w-4 h-4 mr-2" /> Export All to Excel
+              <Download className="w-4 h-4 mr-2" /> Export Orders to Excel
             </Button>
           </div>
 
