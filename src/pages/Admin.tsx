@@ -198,32 +198,8 @@ const Admin = () => {
     exportToExcel(orderRows, 'orders_report');
   };
 
-  const exportAllUserData = () => {
-    const combinedData = profiles.map(profile => {
-      const userSessions = sessions.filter(s => s.user_id === profile.user_id);
-      const userActivities = activities.filter(a => a.user_id === profile.user_id);
-      return {
-        email: profile.email,
-        encrypted_password_hash: profile.encrypted_password_hash,
-        signup_date: profile.created_at,
-        total_sessions: userSessions.length,
-        last_login: userSessions[0]?.login_time || 'N/A',
-        total_activities: userActivities.length,
-        recent_activity: userActivities[0]?.action_type || 'N/A',
-        sessions_json: JSON.stringify(userSessions.map(s => ({
-          login: s.login_time,
-          logout: s.logout_time,
-          active: s.is_active,
-        }))),
-        activities_json: JSON.stringify(userActivities.map(a => ({
-          action: a.action_type,
-          page: a.page_visited,
-          details: a.action_details,
-          time: a.created_at,
-        }))),
-      };
-    });
-    exportToExcel(combinedData, 'complete_user_data');
+  const exportAllData = () => {
+    exportOrdersToExcel();
   };
 
   if (authLoading || loading) {
@@ -256,13 +232,13 @@ const Admin = () => {
                 {isAdmin ? 'Full admin access' : 'Viewing your own data'}
               </p>
             </div>
-            <Button onClick={exportAllUserData} className="glow-primary">
-              <Download className="w-4 h-4 mr-2" /> Export All to Excel
+            <Button onClick={exportAllData} className="glow-primary">
+              <Download className="w-4 h-4 mr-2" /> Export Orders to Excel
             </Button>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
             <Card className="bg-card border-border/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
@@ -273,7 +249,7 @@ const Admin = () => {
             <Card className="bg-card border-border/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Active Sessions</CardTitle>
-                <LogIn className="w-5 h-5 text-green-400" />
+                <LogIn className="w-5 h-5 text-primary" />
               </CardHeader>
               <CardContent><div className="text-3xl font-bold">{sessions.filter(s => s.is_active).length}</div></CardContent>
             </Card>
@@ -290,6 +266,13 @@ const Admin = () => {
                 <Package className="w-5 h-5 text-primary" />
               </CardHeader>
               <CardContent><div className="text-3xl font-bold">{products.length}</div></CardContent>
+            </Card>
+            <Card className="bg-card border-border/50">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Orders</CardTitle>
+                <Package className="w-5 h-5 text-accent" />
+              </CardHeader>
+              <CardContent><div className="text-3xl font-bold">{orders.length}</div></CardContent>
             </Card>
           </div>
 
@@ -439,13 +422,10 @@ const Admin = () => {
             {/* Users Tab */}
             <TabsContent value="users">
               <Card className="bg-card border-border/50">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle className="font-display flex items-center gap-2">
                     <Users className="w-5 h-5" /> User Credentials (Encrypted)
                   </CardTitle>
-                  <Button variant="outline" size="sm" onClick={() => exportToExcel(profiles, 'user_credentials')}>
-                    <Download className="w-4 h-4 mr-2" /> Export
-                  </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
