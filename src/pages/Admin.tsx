@@ -198,32 +198,8 @@ const Admin = () => {
     exportToExcel(orderRows, 'orders_report');
   };
 
-  const exportAllUserData = () => {
-    const combinedData = profiles.map(profile => {
-      const userSessions = sessions.filter(s => s.user_id === profile.user_id);
-      const userActivities = activities.filter(a => a.user_id === profile.user_id);
-      return {
-        email: profile.email,
-        encrypted_password_hash: profile.encrypted_password_hash,
-        signup_date: profile.created_at,
-        total_sessions: userSessions.length,
-        last_login: userSessions[0]?.login_time || 'N/A',
-        total_activities: userActivities.length,
-        recent_activity: userActivities[0]?.action_type || 'N/A',
-        sessions_json: JSON.stringify(userSessions.map(s => ({
-          login: s.login_time,
-          logout: s.logout_time,
-          active: s.is_active,
-        }))),
-        activities_json: JSON.stringify(userActivities.map(a => ({
-          action: a.action_type,
-          page: a.page_visited,
-          details: a.action_details,
-          time: a.created_at,
-        }))),
-      };
-    });
-    exportToExcel(combinedData, 'complete_user_data');
+  const exportAllData = () => {
+    exportOrdersToExcel();
   };
 
   if (authLoading || loading) {
