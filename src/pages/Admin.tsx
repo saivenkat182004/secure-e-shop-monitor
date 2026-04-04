@@ -426,7 +426,6 @@ const Admin = () => {
                   <CardTitle className="font-display flex items-center gap-2">
                     <Users className="w-5 h-5" /> User Credentials (Encrypted)
                   </CardTitle>
-                  <Button variant="outline" size="sm" onClick={() => exportToExcel(profiles, 'user_credentials')}>
                     <Download className="w-4 h-4 mr-2" /> Export
                   </Button>
                 </CardHeader>
