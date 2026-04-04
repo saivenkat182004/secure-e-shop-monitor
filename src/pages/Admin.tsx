@@ -232,7 +232,7 @@ const Admin = () => {
                 {isAdmin ? 'Full admin access' : 'Viewing your own data'}
               </p>
             </div>
-            <Button onClick={exportAllUserData} className="glow-primary">
+            <Button onClick={exportAllData} className="glow-primary">
               <Download className="w-4 h-4 mr-2" /> Export All to Excel
             </Button>
           </div>
