@@ -238,7 +238,7 @@ const Admin = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
             <Card className="bg-card border-border/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
@@ -249,7 +249,7 @@ const Admin = () => {
             <Card className="bg-card border-border/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Active Sessions</CardTitle>
-                <LogIn className="w-5 h-5 text-green-400" />
+                <LogIn className="w-5 h-5 text-primary" />
               </CardHeader>
               <CardContent><div className="text-3xl font-bold">{sessions.filter(s => s.is_active).length}</div></CardContent>
             </Card>
@@ -266,6 +266,13 @@ const Admin = () => {
                 <Package className="w-5 h-5 text-primary" />
               </CardHeader>
               <CardContent><div className="text-3xl font-bold">{products.length}</div></CardContent>
+            </Card>
+            <Card className="bg-card border-border/50">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Orders</CardTitle>
+                <Package className="w-5 h-5 text-accent" />
+              </CardHeader>
+              <CardContent><div className="text-3xl font-bold">{orders.length}</div></CardContent>
             </Card>
           </div>
 
