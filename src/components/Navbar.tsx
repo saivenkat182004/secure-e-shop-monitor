@@ -33,7 +33,7 @@ const Navbar = () => {
             </Link>
             {user && (
               <Link to="/admin" className="text-muted-foreground hover:text-foreground transition-colors">
-                Admin
+                My Profile
               </Link>
             )}
           </div>
@@ -104,7 +104,7 @@ const Navbar = () => {
                   className="text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Admin
+                  My Profile
                 </Link>
               )}
               {user ? (
