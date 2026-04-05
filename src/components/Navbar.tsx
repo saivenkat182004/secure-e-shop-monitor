@@ -32,8 +32,8 @@ const Navbar = () => {
               Products
             </Link>
             {user && (
-              <Link to="/admin" className="text-muted-foreground hover:text-foreground transition-colors">
-                Admin
+              <Link to="/profile" className="text-muted-foreground hover:text-foreground transition-colors">
+                My Profile
               </Link>
             )}
           </div>
@@ -84,27 +84,15 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border/50 animate-slide-up">
             <div className="flex flex-col gap-4">
-              <Link
-                to="/"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Home
               </Link>
-              <Link
-                to="/products"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Link to="/products" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Products
               </Link>
               {user && (
-                <Link
-                  to="/admin"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin
+                <Link to="/profile" className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  My Profile
                 </Link>
               )}
               {user ? (
